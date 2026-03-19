@@ -96,6 +96,46 @@ describe("registry", () => {
     expect(_matchesPattern("defi-analyst", "DEFI")).toBe(true);
   });
 
+  it("discoverAgents should handle duplicate agent types without duplicating results", async () => {
+    const candidates = ["agent1.eth", "agent2.eth"];
+
+    mockGetTextRecord.mockImplementation(
+      async (name: string, _key: string) => {
+        // Both agents have the same type
+        const types: Record<string, string> = {
+          "agent1.eth": "defi-trader",
+          "agent2.eth": "defi-trader",
+        };
+        return types[name] ?? null;
+      },
+    );
+
+    mockBuildAgentProfile.mockImplementation(async (name: string) => ({
+      name,
+      address: "0xabcd",
+      avatar: null,
+      description: null,
+      url: null,
+      twitter: null,
+      agentType: "defi-trader",
+      records: {},
+    }));
+
+    const agents = await discoverAgents("defi", candidates);
+    expect(agents.length).toBe(2);
+    const names = agents.map((a: { name: string }) => a.name).sort();
+    expect(names).toEqual(["agent1.eth", "agent2.eth"]);
+  });
+
+  it("matchesPattern should handle edge cases: empty strings and special chars", () => {
+    expect(_matchesPattern("", "")).toBe(true);
+    expect(_matchesPattern("hello", "")).toBe(true);
+    expect(_matchesPattern("", "hello")).toBe(false);
+    expect(_matchesPattern("defi-analyst", "defi-*")).toBe(true);
+    expect(_matchesPattern("test.value", "test.value")).toBe(true);
+    expect(_matchesPattern("test.value", "test*value")).toBe(true);
+  });
+
   it("discoverAgentsByRecord should search by custom key", async () => {
     const candidates = ["alice.eth", "bob.eth"];
 

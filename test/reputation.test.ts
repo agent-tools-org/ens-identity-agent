@@ -114,6 +114,52 @@ describe("reputation", () => {
     expect(sum).toBe(result.score);
   });
 
+  it("should score exactly 0 for zero-activity address with all breakdown values zero", () => {
+    const factors: ReputationFactors = {
+      transactionCount: 0,
+      accountAgeYears: 0,
+      balanceEth: 0,
+      hasEnsName: false,
+      ensRecordCount: 0,
+    };
+
+    const result = calculateScoreFromFactors(factors);
+    expect(result.score).toBe(0);
+    expect(result.breakdown["transactionCount"]).toBe(0);
+    expect(result.breakdown["accountAge"]).toBe(0);
+    expect(result.breakdown["balance"]).toBe(0);
+    expect(result.breakdown["ensOwnership"]).toBe(0);
+    expect(result.breakdown["ensRecords"]).toBe(0);
+  });
+
+  it("should give high score for whale address with large balance and many transactions", () => {
+    const factors: ReputationFactors = {
+      transactionCount: 3000,
+      accountAgeYears: 6,
+      balanceEth: 500,
+      hasEnsName: true,
+      ensRecordCount: 5,
+    };
+
+    const result = calculateScoreFromFactors(factors);
+    expect(result.score).toBeGreaterThanOrEqual(90);
+    expect(result.breakdown["transactionCount"]).toBe(30);
+    expect(result.breakdown["balance"]).toBe(20);
+  });
+
+  it("should never return score below 0 even with negative inputs", () => {
+    const factors: ReputationFactors = {
+      transactionCount: -1,
+      accountAgeYears: -5,
+      balanceEth: -100,
+      hasEnsName: false,
+      ensRecordCount: -10,
+    };
+
+    const result = calculateScoreFromFactors(factors);
+    expect(result.score).toBeGreaterThanOrEqual(0);
+  });
+
   it("should cap score at 100", () => {
     const factors: ReputationFactors = {
       transactionCount: 100000,

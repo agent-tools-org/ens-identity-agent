@@ -111,6 +111,40 @@ describe("resolver", () => {
     expect(value).toBeNull();
   });
 
+  it("resolveAddress should handle unicode/emoji ENS names", async () => {
+    resetClient();
+    await resolveAddress("🔥.eth").catch(() => null);
+    const mock = getMockClient();
+    const addr = "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B";
+    mock.getEnsAddress.mockResolvedValue(addr);
+
+    const address = await resolveAddress("🔥.eth");
+    expect(address).toBe(addr);
+    expect(mock.getEnsAddress).toHaveBeenCalled();
+  });
+
+  it("resolveAddress should handle subdomain resolution", async () => {
+    resetClient();
+    await resolveAddress("pay.vitalik.eth").catch(() => null);
+    const mock = getMockClient();
+    const addr = "0x1234567890abcdef1234567890abcdef12345678";
+    mock.getEnsAddress.mockResolvedValue(addr);
+
+    const address = await resolveAddress("pay.vitalik.eth");
+    expect(address).toBe(addr);
+    expect(mock.getEnsAddress).toHaveBeenCalled();
+  });
+
+  it("resolveAddress should return null gracefully for expired/erroring names", async () => {
+    resetClient();
+    await resolveAddress("expired-name.eth").catch(() => null);
+    const mock = getMockClient();
+    mock.getEnsAddress.mockRejectedValue(new Error("ENS name expired"));
+
+    const address = await resolveAddress("expired-name.eth");
+    expect(address).toBeNull();
+  });
+
   it("getTextRecords should return multiple records", async () => {
     resetClient();
     await getTextRecord("vitalik.eth", "avatar").catch(() => null);
