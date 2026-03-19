@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-03-19T01:59:01.384Z",
+  "agents": [
+    {
+      "ensName": "vitalik.eth",
+      "address": null,
+      "textRecords": {
+        "avatar": null,
+        "description": null,
+        "url": null,
+        "com.twitter": null,
+        "com.github": null
+      },
+      "reputation": null
+    },
+    {
+      "ensName": "nick.eth",
+      "address": null,
+      "textRecords": {
+        "avatar": "eip155:1/erc1155:0x495f947276749ce646f68ac8c248420045cb7b5e/8112316025873927737505937898915153732580103913704334048512380490797008551937",
+        "description": "Lead developer of ENS & Ethereum Foundation alum. Certified rat tickler. he/him.",
+        "url": null,
+        "com.twitter": null,
+        "com.github": null
+      },
+      "reputation": null
+    },
+    {
+      "ensName": "brantly.eth",
+      "address": null,
+      "textRecords": {
+        "avatar": null,
+        "description": null,
+        "url": "https://ethid.org/",
+        "com.twitter": "brantlymillegan",
+        "com.github": "brantlymillegan"
+      },
+      "reputation": null
+    }
+  ],
+  "knownAgentNames": [
+    "vitalik.eth",
+    "nick.eth",
+    "brantly.eth",
+    "rainbowwallet.eth",
+    "firefly.eth",
+    "aave.eth",
+    "uniswap.eth",
+    "ens.eth"
+  ]
+}
